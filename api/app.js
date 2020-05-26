@@ -1,6 +1,7 @@
 const express = require("express");
 const createError = require('http-errors');
 const userRoutes = require('./Routes/user.routes');
+const productRoutes = require('./Routes/product.routes');
 const dotenv = require('dotenv').config();
 const app = express();
 
@@ -20,6 +21,8 @@ require('./initDB')();
 // Server config
 const PORT = process.env.PORT || 3000;
 
+app.use('/uploads', express.static('uploads'));
+
 //CORS error message handle middleware before routes
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -33,6 +36,7 @@ app.use((req, res, next) => {
 
 // Routes for handling requests 
 app.use('/api/users', userRoutes);
+app.use('/api/product', productRoutes);
 
 // middleware to check if url is correct or not
 app.use((req, res, next) => {
