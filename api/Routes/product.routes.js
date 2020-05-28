@@ -34,5 +34,6 @@ const upload = multer({
 
 router.post("/uploadImage", checkAuth,upload.single('file') ,ProductController.imageUpload);
 router.post("/uploadProduct", checkAuth,ProductController.productUpload);
+router.get("/getProducts", checkAuth,ProductController.getAllProducts);
 
 module.exports = router;

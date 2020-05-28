@@ -45,5 +45,32 @@ exports.productUpload = async (req, res, next) =>
    }
 };
 
+exports.getAllProducts = async (req,res,next)=>{
+    try {
+        const results = await Product.find({}, {
+                __v: 0 // field to be omitted 0 here is for remove 1 is for retained
+            })
+            .populate('writer', {
+                __v: 0
+            }); // populate fills the writer(from product schema 'writer') object in Products object
+        if (results.length > 0) {
+            res.send({
+                "response_code": 200,
+                "message": "All Products fetched successfully",
+                "total_results": results.length,
+                results
+            });
+        } else {
+            res.status(404).json({
+                "response_code": 404,
+                "message": "No Products to display",
+            });
+        }
+    } catch (error) {
+        console.log(error.message);
+        next(createError(res.status, error.message));
+    }
+}
+
 
 
