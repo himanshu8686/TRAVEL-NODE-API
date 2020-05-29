@@ -46,15 +46,40 @@ exports.productUpload = async (req, res, next) =>
 };
 
 exports.getAllProducts = async (req,res,next)=>{
+    let order= req.body.order ? req.body.order : "desc";
+    let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
+    let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+    let skip= parseInt(req.body.skip);
+
+    let findArgs = {};
+
+    console.log(req.body.filters)
+
+    for (let key in req.body.filters) 
+    {
+        if (req.body.filters[key].length > 0) {
+            if( key === "price")
+            {
+
+            }else{
+            findArgs[key] = req.body.filters[key];
+            }
+        }
+    }
     try {
-        const results = await Product.find({}, {
+        const results = await Product.find(findArgs, {
                 __v: 0 // field to be omitted 0 here is for remove 1 is for retained
             })
             .populate('writer', {
                 __v: 0
-            }); // populate fills the writer(from product schema 'writer') object in Products object
+            }) // populate fills the writer(from product schema 'writer') object in Products object
+            .sort([[sortBy,order]])
+            .skip(skip)
+            .limit(limit); 
+
         if (results.length > 0) {
             res.send({
+                "success":true,
                 "response_code": 200,
                 "message": "All Products fetched successfully",
                 "total_results": results.length,
