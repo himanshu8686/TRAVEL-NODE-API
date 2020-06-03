@@ -58,15 +58,20 @@ exports.getAllProducts = async (req,res,next)=>{
     for (let key in req.body.filters) 
     {
         if (req.body.filters[key].length > 0) {
-            if( key === "price")
+           // console.log("keys",req.body.filters[key])
+            if( key === "productPrice")
             {
-
+                findArgs[key] ={
+                    $gte: req.body.filters[key][0],
+                    $lte:req.body.filters[key][1]
+                }
             }else{
             findArgs[key] = req.body.filters[key];
             }
         }
     }
     try {
+        console.log(findArgs)
         const results = await Product.find(findArgs, {
                 __v: 0 // field to be omitted 0 here is for remove 1 is for retained
             })
